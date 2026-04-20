@@ -1,6 +1,6 @@
-# Contributing to RideRabbit
+# Developer Reference Guide
 
-Welcome to the RideRabbit developer guide! This document is designed for engineers who are actively contributing, fixing bugs, or adding new features to the platform. It covers the technical conventions, state management logic, and step-by-step guides on how to extend the codebase.
+Welcome to the RideRabbit developer guide! This document is designed as a personal reference for navigating, fixing, or adding new features to the platform. It covers the technical conventions, state management logic, and step-by-step workflows for extending the codebase.
 
 ---
 

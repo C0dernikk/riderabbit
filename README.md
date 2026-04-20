@@ -5,7 +5,7 @@
   <p>
     <img src="https://img.shields.io/badge/MERN-Stack-green" alt="MERN Stack">
     <img src="https://img.shields.io/badge/Status-Production_Ready-blue" alt="Production Ready">
-    <img src="https://img.shields.io/badge/License-MIT-purple" alt="License">
+    <img src="https://img.shields.io/badge/License-Proprietary-red" alt="License">
   </p>
 </div>
 
@@ -39,20 +39,38 @@ Traditional car rental services are plagued by rigid locations, high overheads, 
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Technologies Used
 
-### Frontend
-* **Core**: React 18, Vite
-* **State Management**: Redux Toolkit
-* **Styling**: Tailwind CSS (with glassmorphism & custom utility merging via `cn`)
-* **Animations**: Framer Motion
-* **Routing**: React Router v6
+<div align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=mongodb,express,react,nodejs&theme=light" alt="MERN Stack" />
+  </a>
+  <br><br>
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=vite,redux,tailwind,framer,git,github,vercel&theme=light" alt="Tools & Services" />
+  </a>
+</div>
 
-### Backend
-* **Core**: Node.js, Express.js
-* **Database**: MongoDB (Mongoose ORM)
-* **Real-Time**: Socket.io
-* **Authentication**: JWT (Access/Refresh strategy)
+<br>
+
+### 💻 Frontend Architecture
+* **Core Framework**: React 18 powered by Vite for blazing-fast HMR and optimized production builds.
+* **State Management**: Redux Toolkit for predictable global state management (Auth, UI states, Booking parameters).
+* **Styling Engine**: Tailwind CSS utilized for highly customized, responsive layouts featuring modern glassmorphism UI elements.
+* **Animations**: Framer Motion orchestrates complex micro-interactions, page transitions, and responsive modal behaviors.
+* **Routing**: React Router v6 handling protected routes, role-based redirects, and nested layouts.
+
+### ⚙️ Backend Architecture
+* **Runtime**: Node.js executing an Express.js RESTful API architecture.
+* **Database**: MongoDB hosted on Atlas, utilizing Mongoose ORM for strict schema validation and advanced geospatial querying (`$near`).
+* **Real-Time Engine**: Socket.io enabling bidirectional, event-driven communication for the User-Vendor chat hub.
+* **Authentication**: Industry-standard JSON Web Tokens (JWT). Access tokens are memory-bound (12h TTL), while Refresh tokens are secured via `HttpOnly`, `SameSite=None` cookies.
+
+### 🔌 Third-Party API Integrations
+* **Payments**: Razorpay handling seamless checkout sessions, webhooks, and vendor tracking.
+* **Emails**: Resend API routing high-deliverability transactional emails via custom HTML templates.
+* **Storage**: Cloudinary managing and optimizing dynamic multipart form uploads (Images/Documents).
+* **Geolocation**: Nominatim (OpenStreetMap) providing free, precise forward-geocoding for maps.
 
 ---
 
@@ -195,15 +213,11 @@ This project strictly adheres to modern security standards:
 
 ---
 
-## 🤝 Contribution Guidelines
+## 🤝 Copyright & License
 
-We welcome community contributions! Please read our [CONTRIBUTING.md](./CONTRIBUTING.md) for details on our code of conduct, branching strategy, and the process for submitting Pull Requests.
+This is a **proprietary, closed-source** project built and maintained exclusively for RideRabbit. 
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'feat: Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+The source code, architecture, and intellectual property are not open for public distribution, modification, or community contribution. All rights are strictly reserved.
 
 ---
 
