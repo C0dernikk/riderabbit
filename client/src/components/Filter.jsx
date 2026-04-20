@@ -16,11 +16,12 @@ const Filter = () => {
   const [filterOpen, setFilterOpen] = useState(true);
   const dispatch = useDispatch();
 
-  const formData = watch();
-
   useEffect(() => {
-    dispatch(applyLocalFilters(formData));
-  }, [formData, dispatch]);
+    const subscription = watch((value) => {
+      dispatch(applyLocalFilters(value));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, dispatch]);
 
   const handleClick = () => {
     if (window.innerWidth <= 924) {
