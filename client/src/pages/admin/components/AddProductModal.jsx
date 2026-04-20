@@ -145,18 +145,11 @@ const AddProductModal = () => {
               {...register("registeration_number", { required: "Required" })}
             />
 
-            <Controller
-              control={control}
-              name="company"
-              rules={{ required: "Required" }}
-              render={({ field }) => (
-                <Select
-                  label="Brand/Company"
-                  error={errors.company?.message}
-                  options={companyData.map(c => ({ label: c, value: c }))}
-                  {...field}
-                />
-              )}
+            <Select
+              label="Brand/Company"
+              error={errors.company?.message}
+              options={companyData.map(c => ({ label: c, value: c }))}
+              {...register("company", { required: "Required" })}
             />
 
             <Input
@@ -166,18 +159,11 @@ const AddProductModal = () => {
               {...register("title", { required: "Required" })}
             />
 
-            <Controller
-              control={control}
-              name="model"
-              rules={{ required: "Required" }}
-              render={({ field }) => (
-                <Select
-                  label="Model"
-                  error={errors.model?.message}
-                  options={modelData.map(m => ({ label: m, value: m }))}
-                  {...field}
-                />
-              )}
+            <Select
+              label="Model"
+              error={errors.model?.message}
+              options={modelData.map(m => ({ label: m, value: m }))}
+              {...register("model", { required: "Required" })}
             />
 
             <Input
@@ -202,76 +188,48 @@ const AddProductModal = () => {
               {...register("year_made", { required: "Required" })}
             />
 
-            <Controller
-              control={control}
-              name="fuelType"
-              rules={{ required: "Required" }}
-              render={({ field }) => (
-                <Select
-                  label="Fuel Type"
-                  error={errors.fuelType?.message}
-                  options={[
-                    { label: "Petrol", value: "petrol" },
-                    { label: "Diesel", value: "diesel" },
-                    { label: "Electric", value: "electric" },
-                    { label: "Hybrid", value: "hybrid" },
-                  ]}
-                  {...field}
-                />
-              )}
+            <Select
+              label="Fuel Type"
+              error={errors.fuelType?.message}
+              options={[
+                { label: "Petrol", value: "petrol" },
+                { label: "Diesel", value: "diesel" },
+                { label: "Electric", value: "electric" },
+                { label: "Hybrid", value: "hybrid" },
+              ]}
+              {...register("fuelType", { required: "Required" })}
             />
 
-            <Controller
-              control={control}
-              name="carType"
-              rules={{ required: "Required" }}
-              render={({ field }) => (
-                <Select
-                  label="Car Type"
-                  error={errors.carType?.message}
-                  options={[
-                    { label: "Sedan", value: "sedan" },
-                    { label: "SUV", value: "suv" },
-                    { label: "Hatchback", value: "hatchback" },
-                  ]}
-                  {...field}
-                />
-              )}
+            <Select
+              label="Car Type"
+              error={errors.carType?.message}
+              options={[
+                { label: "Sedan", value: "sedan" },
+                { label: "SUV", value: "suv" },
+                { label: "Hatchback", value: "hatchback" },
+              ]}
+              {...register("carType", { required: "Required" })}
             />
 
-            <Controller
-              control={control}
-              name="Seats"
-              rules={{ required: "Required" }}
-              render={({ field }) => (
-                <Select
-                  label="Seats"
-                  error={errors.Seats?.message}
-                  options={[
-                    { label: "5", value: "5" },
-                    { label: "7", value: "7" },
-                    { label: "8", value: "8" },
-                  ]}
-                  {...field}
-                />
-              )}
+            <Select
+              label="Seats"
+              error={errors.Seats?.message}
+              options={[
+                { label: "5", value: "5" },
+                { label: "7", value: "7" },
+                { label: "8", value: "8" },
+              ]}
+              {...register("Seats", { required: "Required" })}
             />
 
-            <Controller
-              control={control}
-              name="transmitionType"
-              rules={{ required: "Required" }}
-              render={({ field }) => (
-                <Select
-                  label="Transmission Type"
-                  error={errors.transmitionType?.message}
-                  options={[
-                    { label: "Automatic", value: "automatic" },
-                    { label: "Manual", value: "manual" },
-                  ]}
-                  {...field}
-                />
-              )}
+            <Select
+              label="Transmission Type"
+              error={errors.transmitionType?.message}
+              options={[
+                { label: "Automatic", value: "automatic" },
+                { label: "Manual", value: "manual" },
+              ]}
+              {...register("transmitionType", { required: "Required" })}
             />
             
             <Controller
