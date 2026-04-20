@@ -152,7 +152,7 @@ export const google = async (req, res, next) => {
   try {
     let user = await User.findOne({ email });
 
-    if (user && user.role !== "user") {
+    if (user && user.role !== "user" && user.role !== "admin") {
       return next(
         errorHandler(409, "Email already belongs to a different role"),
       );
