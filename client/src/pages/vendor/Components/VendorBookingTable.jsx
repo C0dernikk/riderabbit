@@ -1,0 +1,313 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  IconCalendar,
+  IconMapPin,
+  IconClock,
+  IconChevronRight,
+  IconMoodSad,
+  IconReceipt2,
+  IconChevronDown,
+  IconCurrencyRupee,
+} from "@tabler/icons-react";
+import { toast } from "sonner";
+
+import VendorBookingDetailModal from "./VendorBookingModal";
+import {
+  setOrderModalOpen,
+  setSingleOrderDetails,
+  openGlobalChat,
+} from "../../../features/ui/uiSlice";
+import { IconMessage } from "@tabler/icons-react";
+import { vendorService } from "../../../services/vendor";
+import Card from "../../../components/ui/Card";
+import Button from "../../../components/ui/Button";
+
+const VendorBookingsTable = () => {
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  const statusOptions = [
+    "NOT_BOOKED",
+    "BOOKED",
+    "PICKED_UP",
+    "ON_TRIP",
+    "TRIP_ENDED",
+    "TRIP_COMPLETED",
+    "NOT_PICKED",
+    "CANCELED",
+    "OVERDUE"
+  ];
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const data = await vendorService.getMyBookings();
+      setFilteredBookings(data.bookings || []);
+    } catch (error) {
+      toast.error("Failed to fetch bookings");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleStatusChange = async (e, bookingId) => {
+    const newStatus = e.target.value;
+    try {
+      if (newStatus === "PICKED_UP") {
+        await vendorService.completePickup(bookingId);
+      } else if (newStatus === "ON_TRIP") {
+        await vendorService.startTrip(bookingId);
+      } else if (newStatus === "TRIP_ENDED") {
+        await vendorService.endTrip(bookingId);
+      } else if (newStatus === "TRIP_COMPLETED") {
+        await vendorService.completeReturnInspection(bookingId);
+      } else {
+        await vendorService.updateBookingStatus(bookingId, newStatus);
+      }
+      toast.success(`Status updated to ${newStatus.replace(/_/g, " ")}`);
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update status");
+    }
+  };
+
+  const handleDetailsModal = (cur) => {
+    dispatch(setSingleOrderDetails(cur));
+    dispatch(setOrderModalOpen(true));
+  };
+
+  const handleOpenChat = (e, booking) => {
+    e.stopPropagation();
+    if (booking) {
+      dispatch(
+        openGlobalChat({
+          bookingId: booking._id,
+          otherPartyId: booking.userId?._id || booking.userId,
+          otherPartyName: booking.customer?.username || "Customer",
+        })
+      );
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "trip_completed":
+        return "bg-emerald-100 text-emerald-700";
+      case "booked":
+        return "bg-emerald-50 text-emerald-600";
+      case "on_trip":
+      case "picked_up":
+        return "bg-primary-100 text-primary-700";
+      case "canceled":
+      case "overdue":
+      case "not_picked":
+        return "bg-slate-200 text-slate-700";
+      default:
+        return "bg-slate-100 text-slate-700";
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      <VendorBookingDetailModal />
+
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 leading-tight">
+            Incoming <span className="text-primary-600">Bookings</span>
+          </h1>
+          <p className="text-slate-500 font-medium">
+            Monitor and manage your vehicle rentals
+          </p>
+        </div>
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-100 shadow-sm">
+          <IconReceipt2 className="text-primary-600" size={20} />
+          <span className="font-bold text-slate-700">
+            {filteredBookings.length} Total Requests
+          </span>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="grid gap-6">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="h-48 bg-white rounded-3xl animate-pulse shadow-sm border border-slate-100"
+            />
+          ))}
+        </div>
+      ) : filteredBookings.length > 0 ? (
+        <div className="grid gap-6">
+          <AnimatePresence>
+            {filteredBookings.map((booking, idx) => {
+              const pickupDate = new Date(booking.pickupDate);
+              const dropoffDate = new Date(booking.dropOffDate);
+
+              return (
+                <motion.div
+                  key={booking._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <Card className="p-0 overflow-hidden border-none shadow-premium group">
+                    <div className="flex flex-col lg:flex-row">
+                      {/* Car Preview */}
+                      <div className="lg:w-64 bg-slate-50 p-6 flex items-center justify-center border-r border-slate-100">
+                        <img
+                          src={booking.vehicleDetails?.images?.[0] || 'https://via.placeholder.com/150'}
+                          alt={booking.vehicleDetails?.brand || 'Vehicle'}
+                          className="w-full h-auto object-contain group-hover:scale-110 transition-transform duration-500"
+                        />
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 p-6 md:p-8 flex flex-col justify-between">
+                        <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
+                          <div>
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-xl font-black text-slate-900 capitalize">
+                                {booking.vehicleDetails?.brand}{" "}
+                                {booking.vehicleDetails?.model}
+                              </h3>
+                              <div className="relative inline-block">
+                                <select
+                                  value={booking.status || "BOOKED"}
+                                  onChange={(e) =>
+                                    handleStatusChange(e, booking._id)
+                                  }
+                                  className={`appearance-none pl-3 pr-8 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest outline-none border-none cursor-pointer transition-colors ${getStatusColor(booking.status || "BOOKED")}`}
+                                >
+                                  {statusOptions.map((opt) => (
+                                    <option key={opt} value={opt}>
+                                      {opt.replace(/_/g, " ")}
+                                    </option>
+                                  ))}
+                                </select>
+                                <IconChevronDown
+                                  size={10}
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50"
+                                />
+                              </div>
+                            </div>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                              Booking ID:{" "}
+                              <span className="text-slate-600">
+                                #{booking._id.slice(-8)}
+                              </span>
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-black text-primary-600 flex items-center justify-end">
+                              <IconCurrencyRupee size={24} />
+                              {booking.totalPrice}
+                            </div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                              Total Earnings
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-8 border-t border-slate-50 pt-6">
+                          <div className="space-y-3">
+                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                              Pick-up
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <IconCalendar
+                                size={16}
+                                className="text-accent-500 mt-0.5"
+                              />
+                              <div className="text-sm font-bold text-slate-700">
+                                {pickupDate.toDateString()}
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <IconMapPin
+                                size={16}
+                                className="text-accent-500 mt-0.5"
+                              />
+                              <div className="text-sm font-medium text-slate-500 truncate max-w-[150px]">
+                                {booking.pickUpLocation}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                              Drop-off
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <IconCalendar
+                                size={16}
+                                className="text-accent-500 mt-0.5"
+                              />
+                              <div className="text-sm font-bold text-slate-700">
+                                {dropoffDate.toDateString()}
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <IconMapPin
+                                size={16}
+                                className="text-accent-500 mt-0.5"
+                              />
+                              <div className="text-sm font-medium text-slate-500 truncate max-w-[150px]">
+                                {booking.dropOffLocation}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-8 flex justify-end gap-3">
+                          <Button
+                            variant="primary"
+                            className="px-6 py-2.5 rounded-xl text-xs bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 flex items-center gap-2"
+                            onClick={(e) => handleOpenChat(e, booking)}
+                          >
+                            <IconMessage size={14} />
+                            Chat
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            className="px-6 py-2.5 rounded-xl text-xs"
+                            onClick={() => handleDetailsModal(booking)}
+                          >
+                            Full Details
+                            <IconChevronRight size={14} className="ml-1" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      ) : (
+        <Card className="flex flex-col items-center justify-center py-24 px-6 text-center border-none shadow-premium bg-white">
+          <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+            <IconMoodSad size={48} className="text-slate-300" />
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 mb-2">
+            No Bookings Found
+          </h2>
+          <p className="text-slate-500 max-w-md mx-auto mb-8">
+            You don't have any bookings for your vehicles yet. Once a customer
+            books your car, it will appear here.
+          </p>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default VendorBookingsTable;
