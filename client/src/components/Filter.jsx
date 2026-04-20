@@ -72,7 +72,8 @@ const Filter = () => {
                               render={({ field }) => (
                                 <Checkbox
                                   {...field}
-                                  checked={field["value"] ?? false}
+                                  checked={!!field.value}
+                                  onChange={(e) => field.onChange(e.target.checked)}
                                   sx={{ color: '#10b981', '&.Mui-checked': { color: '#10b981' } }}
                                 />
                               )}
@@ -88,7 +89,8 @@ const Filter = () => {
                               render={({ field }) => (
                                 <Checkbox
                                   {...field}
-                                  checked={field["value"] ?? false}
+                                  checked={!!field.value}
+                                  onChange={(e) => field.onChange(e.target.checked)}
                                   sx={{ color: '#10b981', '&.Mui-checked': { color: '#10b981' } }}
                                 />
                               )}
@@ -104,7 +106,8 @@ const Filter = () => {
                               render={({ field }) => (
                                 <Checkbox
                                   {...field}
-                                  checked={field["value"] ?? false}
+                                  checked={!!field.value}
+                                  onChange={(e) => field.onChange(e.target.checked)}
                                   sx={{ color: '#10b981', '&.Mui-checked': { color: '#10b981' } }}
                                 />
                               )}
@@ -133,7 +136,8 @@ const Filter = () => {
                               render={({ field }) => (
                                 <Checkbox
                                   {...field}
-                                  checked={field["value"] ?? false}
+                                  checked={!!field.value}
+                                  onChange={(e) => field.onChange(e.target.checked)}
                                   sx={{ color: '#10b981', '&.Mui-checked': { color: '#10b981' } }}
                                 />
                               )}
@@ -149,7 +153,8 @@ const Filter = () => {
                               render={({ field }) => (
                                 <Checkbox
                                   {...field}
-                                  checked={field["value"] ?? false}
+                                  checked={!!field.value}
+                                  onChange={(e) => field.onChange(e.target.checked)}
                                   sx={{ color: '#10b981', '&.Mui-checked': { color: '#10b981' } }}
                                 />
                               )}

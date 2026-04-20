@@ -111,6 +111,7 @@ const vehiclesSlice = createSlice({
     },
     clearFilters: (state) => {
       state.filters = initialState.filters;
+      state.filteredVehicles = state.variantMode ? state.allVariants : state.vehicles;
     },
     setSingleVehicleDetail: (state, action) => {
       state.singleVehicleDetail = action.payload;

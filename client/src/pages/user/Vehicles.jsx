@@ -18,6 +18,7 @@ import {
   fetchAllVehicles,
   fetchVehicleById,
   setVariants,
+  clearFilters,
 } from "../../features/vehicles/vehiclesSlice";
 import Filter from "../../components/Filter";
 import Sort from "../../components/Sort";
@@ -50,6 +51,7 @@ const Vehicles = () => {
   );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState("grid"); // "grid" or "list"
+  const [filterKey, setFilterKey] = useState(0);
 
   useEffect(() => {
     dispatch(setVariants(null));
@@ -133,12 +135,18 @@ const Vehicles = () => {
                       Filters
                     </h2>
                   </div>
-                  <button className="text-[10px] font-black text-primary-600 uppercase tracking-widest hover:underline">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      dispatch(clearFilters());
+                      setFilterKey(k => k + 1);
+                    }}
+                    className="text-[10px] font-black text-primary-600 uppercase tracking-widest hover:underline">
                     Reset
                   </button>
                 </div>
                 <div className="p-6">
-                  <Filter />
+                  <Filter key={filterKey} />
                 </div>
               </Card>
 
@@ -243,7 +251,10 @@ const Vehicles = () => {
                   Try adjusting them.
                 </p>
                 <Button
-                  onClick={() => window.location.reload()}
+                  onClick={() => {
+                    dispatch(clearFilters());
+                    setFilterKey(k => k + 1);
+                  }}
                   variant="secondary"
                   className="px-8 rounded-xl border-slate-200"
                 >
