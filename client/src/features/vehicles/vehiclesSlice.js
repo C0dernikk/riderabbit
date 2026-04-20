@@ -137,18 +137,31 @@ const vehiclesSlice = createSlice({
     },
     applySorting: (state, action) => {
       state.filters.sort = action.payload;
-      const { field, order } = action.payload;
-      state.filteredVehicles.sort((a, b) => {
-        if (field === "price") {
-          return order === "asc" ? a.price - b.price : b.price - a.price;
-        } else if (field === "year") {
-          return order === "asc" ? a.yearMade - b.yearMade : b.yearMade - a.yearMade;
-        }
-        return 0;
-      });
+      vehiclesSlice.caseReducers.applyAllFilters(state);
+    },
+    setSearchQuery: (state, action) => {
+      state.filters.searchQuery = action.payload;
+      vehiclesSlice.caseReducers.applyAllFilters(state);
     },
     applyLocalFilters: (state, action) => {
-      const data = action.payload;
+      state.filters.checkboxes = action.payload;
+      vehiclesSlice.caseReducers.applyAllFilters(state);
+    },
+    applyAllFilters: (state) => {
+      let result = state.variantMode ? [...state.allVariants] : [...state.vehicles];
+
+      // 1. Search Query
+      const query = state.filters.searchQuery?.toLowerCase();
+      if (query) {
+        result = result.filter(v => 
+          v.brand?.toLowerCase().includes(query) || 
+          v.model?.toLowerCase().includes(query) ||
+          v.title?.toLowerCase().includes(query)
+        );
+      }
+
+      // 2. Checkboxes
+      const data = state.filters.checkboxes || {};
       const activeCarTypes = [];
       if (data.suv) activeCarTypes.push("suv");
       if (data.sedan) activeCarTypes.push("sedan");
@@ -157,9 +170,6 @@ const vehiclesSlice = createSlice({
       const activeTransmissions = [];
       if (data.automatic) activeTransmissions.push("automatic");
       if (data.manual) activeTransmissions.push("manual");
-
-      let baseData = state.variantMode ? [...state.allVariants] : [...state.vehicles];
-      let result = [...baseData];
 
       if (activeCarTypes.length > 0) {
         result = result.filter(v => activeCarTypes.includes(v.carType?.toLowerCase()));
@@ -170,7 +180,7 @@ const vehiclesSlice = createSlice({
 
       state.filteredVehicles = result;
 
-      // Re-apply sort if any
+      // 3. Sort
       const sort = state.filters.sort;
       if (sort && sort.field) {
         state.filteredVehicles.sort((a, b) => {
@@ -183,6 +193,7 @@ const vehiclesSlice = createSlice({
         });
       }
     },
+
     setUserAllVehicles: (state, action) => {
       state.userAllVehicles = action.payload;
     },
@@ -275,6 +286,6 @@ const vehiclesSlice = createSlice({
   },
 });
 
-export const { setFilters, clearFilters, setSingleVehicleDetail, clearSingleVehicleDetail, setMetadata, setAvailableVehicles, setVariants, setVariantModeOrNot, setVendorVehicles, applySorting, applyLocalFilters, setUserAllVehicles, setVehicles, setVendorRequests } = vehiclesSlice.actions;
+export const { setFilters, clearFilters, setSingleVehicleDetail, clearSingleVehicleDetail, setMetadata, setAvailableVehicles, setVariants, setVariantModeOrNot, setVendorVehicles, applySorting, applyLocalFilters, setSearchQuery, setUserAllVehicles, setVehicles, setVendorRequests } = vehiclesSlice.actions;
 
 export default vehiclesSlice.reducer;

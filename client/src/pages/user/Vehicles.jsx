@@ -19,6 +19,7 @@ import {
   fetchVehicleById,
   setVariants,
   clearFilters,
+  setSearchQuery,
 } from "../../features/vehicles/vehiclesSlice";
 import Filter from "../../components/Filter";
 import Sort from "../../components/Sort";
@@ -46,7 +47,7 @@ export const onVehicleDetail = async (id, dispatch, navigate) => {
 const Vehicles = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { filteredVehicles: displayData, isLoading } = useSelector(
+  const { filteredVehicles: displayData, isLoading, filters } = useSelector(
     (state) => state.vehicles,
   );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -185,6 +186,8 @@ const Vehicles = () => {
                 <input
                   type="text"
                   placeholder="Search brand or model..."
+                  value={filters?.searchQuery || ""}
+                  onChange={(e) => dispatch(setSearchQuery(e.target.value))}
                   className="w-full pl-12 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
                 />
               </div>
