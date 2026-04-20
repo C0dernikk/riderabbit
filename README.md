@@ -1,12 +1,17 @@
 <div align="center">
-  <img src="./client/src/pages/admin/data/welcome-bg.svg" alt="RideRabbit Logo" width="200" />
-  <h1>RideRabbit</h1>
-  <p><strong>Premium P2P Vehicle Rental & Fleet Management Platform</strong></p>
+  
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=10b981&height=250&section=header&text=RideRabbit&fontSize=80&fontColor=ffffff&desc=Premium%20P2P%20Vehicle%20Rental%20Platform&descSize=20&descColor=ffffff" width="100%" />
+
+  <br>
+  
   <p>
-    <img src="https://img.shields.io/badge/MERN-Stack-green" alt="MERN Stack">
-    <img src="https://img.shields.io/badge/Status-Production_Ready-blue" alt="Production Ready">
-    <img src="https://img.shields.io/badge/License-Proprietary-red" alt="License">
+    <a href="#-overview"><img src="https://img.shields.io/badge/MERN_Stack-10b981?style=for-the-badge&logo=node.js&logoColor=white" alt="MERN Stack"></a>
+    <a href="#-features"><img src="https://img.shields.io/badge/Status-Production_Ready-0284c7?style=for-the-badge" alt="Production Ready"></a>
+    <a href="#-copyright--license"><img src="https://img.shields.io/badge/License-Proprietary-ef4444?style=for-the-badge" alt="License"></a>
   </p>
+  
+  <h3>🚗 Rent Anywhere. &nbsp; | &nbsp; 🏪 Host Anytime. &nbsp; | &nbsp; 💸 Earn Instantly.</h3>
+  
 </div>
 
 ---
@@ -222,5 +227,5 @@ The source code, architecture, and intellectual property are not open for public
 ---
 
 <p align="center">
-  Built with ❤️ by the <b>RideRabbit</b> Team.
+  Built with ❤️ by the <b>Nikhil</b>.
 </p>
