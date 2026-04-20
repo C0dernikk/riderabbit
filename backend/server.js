@@ -32,6 +32,19 @@ const allowedOrigins = (
 // Initialize Socket.io
 initSocket(httpServer, allowedOrigins);
 
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 // Must use raw body for Razorpay webhook signature verification
 app.use("/api/user/payments/webhook", express.raw({ type: "application/json" }));
 
