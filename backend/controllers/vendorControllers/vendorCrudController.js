@@ -47,6 +47,11 @@ export const vendorAddVehicle = async (req, res, next) => {
       district,
       lat,
       lng,
+      carType,
+      basePackage,
+      insuranceEndDate,
+      registrationEndDate,
+      pollutionEndDate,
     } = req.body;
 
     if (
@@ -97,6 +102,11 @@ export const vendorAddVehicle = async (req, res, next) => {
       price,
       location,
       district,
+      carType,
+      basePackage,
+      insuranceEnd: insuranceEndDate,
+      registrationEnd: registrationEndDate,
+      pollutionEnd: pollutionEndDate,
       locationPoint: {
         type: 'Point',
         coordinates: [

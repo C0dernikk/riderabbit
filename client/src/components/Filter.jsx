@@ -3,30 +3,30 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { GoPlus } from "react-icons/go";
 
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { applyLocalFilters } from "../features/vehicles/vehiclesSlice";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Filter = () => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, watch } = useForm();
   const { vehicles, variants } = useSelector((state) => state.vehicles);
   const { filters } = useSelector((state) => state.vehicles);
 
   const [filterOpen, setFilterOpen] = useState(true);
   const dispatch = useDispatch();
 
-  const handleData = async (data) => {
-    dispatch(applyLocalFilters(data));
-  };
+  const formData = watch();
 
-  const handleClick =()=> {
+  useEffect(() => {
+    dispatch(applyLocalFilters(formData));
+  }, [formData, dispatch]);
+
+  const handleClick = () => {
     if (window.innerWidth <= 924) {
-      // Only execute on mobile and tablet views
       setFilterOpen(!filterOpen);
     }
-
-  }
+  };
 
   
   return (
@@ -53,8 +53,8 @@ const Filter = () => {
             <h3 className="sr-only">Categories</h3>
 
             <div className="border-t border-gray-200 px-4 py-6">
-              <div className="flex flex-col justify-center  items-start gap-y-4 w-full">
-                <form className="w-full" onSubmit={handleSubmit(handleData)}>
+              <div className="flex flex-col justify-center items-start gap-y-4 w-full">
+                <form className="w-full">
                   <div className="w-full mb-7 ">
                     <div className="mb-5 flex justify-between items-center">
                       <div>Type</div>{" "}
@@ -166,7 +166,7 @@ const Filter = () => {
                     </div>
                   </div>
 
-                  <div className="mt-7 pt-7 border-t border-t-gray-300">
+                  <div className="mt-7 pt-7 border-t border-t-gray-300 hidden">
                     <button
                       type="submit"
                       className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white rounded-md"
