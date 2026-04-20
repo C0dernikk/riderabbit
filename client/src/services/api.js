@@ -39,7 +39,12 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error("AXIOS RESPONSE ERROR:", error);
-    const message = error.response?.data?.message || "Something went wrong";
+    let message = "Something went wrong";
+    if (error.response?.data?.message) {
+      message = error.response.data.message;
+    } else if (error.message) {
+      message = error.message;
+    }
 
     // Handle specific status codes
     if (error.response?.status === 401) {
