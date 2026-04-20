@@ -48,10 +48,22 @@ export const addVehicle = async (req, res, next) => {
       );
     }
 
-    const fileData = dataUri(req);
-    const uploadedImages = await Promise.all(
-      fileData.map((file) => cloudinary.uploader.upload(file.data))
-    );
+    const files = dataUri(req);
+    const uploadedImages = [];
+    const certification = {};
+
+    for (const file of files) {
+      const result = await cloudinary.uploader.upload(file.data);
+      if (file.fieldname === "image") {
+        uploadedImages.push(result.secure_url);
+      } else if (file.fieldname === "insurance_image") {
+        certification.insurance = result.secure_url;
+      } else if (file.fieldname === "rc_book_image") {
+        certification.rc = result.secure_url;
+      } else if (file.fieldname === "polution_image") {
+        certification.pollution = result.secure_url;
+      }
+    }
 
     const vehicle = new Vehicle({
       registrationNumber,
@@ -77,7 +89,8 @@ export const addVehicle = async (req, res, next) => {
           lat ? parseFloat(lat) : 10.8505
         ]
       },
-      images: uploadedImages.map((image) => image.secure_url),
+      images: uploadedImages,
+      certification,
       addedBy: req.user,
     });
 

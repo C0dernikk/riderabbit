@@ -67,12 +67,19 @@ export const vendorAddVehicle = async (req, res, next) => {
 
     const files = dataUri(req);
     const uploadedImages = [];
-
-    console.log("DATA URI FILES GENERATED:", files.map(f => ({ ...f, data: f.data.substring(0, 50) + '...' })));
+    const certification = {};
 
     for (const file of files) {
       const result = await cloudinary.uploader.upload(file.data);
-      uploadedImages.push(result.secure_url);
+      if (file.fieldname === "image") {
+        uploadedImages.push(result.secure_url);
+      } else if (file.fieldname === "insurance_image") {
+        certification.insurance = result.secure_url;
+      } else if (file.fieldname === "rc_book_image") {
+        certification.rc = result.secure_url;
+      } else if (file.fieldname === "polution_image") {
+        certification.pollution = result.secure_url;
+      }
     }
 
     const newVehicle = new Vehicle({
@@ -86,6 +93,7 @@ export const vendorAddVehicle = async (req, res, next) => {
       seats,
       transmission,
       images: uploadedImages,
+      certification,
       price,
       location,
       district,

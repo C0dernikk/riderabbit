@@ -17,7 +17,7 @@ const upload = multer({
   fileFilter,
 });
 
-export const multerUploads = upload.array("image", 5);
+export const multerUploads = upload.any();
 export const multerMultipleUploads = multerUploads;
 
 export const dataUri = (req) => {
@@ -32,6 +32,7 @@ export const dataUri = (req) => {
     return {
       data: `data:${mimeType};base64,${base64}`,
       filename: file.originalname,
+      fieldname: file.fieldname,
     };
   });
 };
