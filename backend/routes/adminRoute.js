@@ -70,7 +70,7 @@ router.patch(
 
 router.post("/vehicles", ...requireAdmin, multerUploads, addVehicle);
 router.get("/vehicles", ...requireAdmin, showVehicles);
-router.put("/vehicles/:id", ...requireAdmin, editVehicle);
+router.put("/vehicles/:id", ...requireAdmin, multerUploads, editVehicle);
 router.delete("/vehicles/:id", ...requireAdmin, deleteVehicle);
 
 router.post("/dummy-data", ...requireAdmin, insertDummyData);

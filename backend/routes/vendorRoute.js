@@ -60,7 +60,7 @@ router.patch(
 router.post("/vehicles", ...requireVendor, multerUploads, vendorAddVehicle);
 router.get("/vehicles", ...requireVendor, showVendorVehicles);
 router.get("/dashboard/stats", ...requireVendor, getVendorStats);
-router.put("/vehicles/:id", ...requireVendor, vendorEditVehicle);
+router.put("/vehicles/:id", ...requireVendor, multerUploads, vendorEditVehicle);
 router.delete("/vehicles/:id", ...requireVendor, vendorDeleteVehicle);
 
 router.get("/bookings", ...requireVendor, vendorBookings);

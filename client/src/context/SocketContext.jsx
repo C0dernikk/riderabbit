@@ -18,7 +18,10 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (currentUser) {
-      const newSocket = io(import.meta.env.VITE_BACKEND_URL || "http://localhost:3000", {
+      const apiUrl = import.meta.env.VITE_API_URL || "";
+      const socketUrl = import.meta.env.VITE_BACKEND_URL || (apiUrl ? apiUrl.replace("/api", "") : "http://localhost:3000");
+      
+      const newSocket = io(socketUrl, {
         withCredentials: true,
       });
 

@@ -29,13 +29,15 @@ function OAuth() {
       }
 
       if (data.success) {
-        if (data.user.role === "user") {
-          dispatch(signInSuccess(data.user));
-          toast.success("Successfully logged in with Google!");
-          navigate("/");
+        dispatch(signInSuccess(data.user));
+        toast.success("Successfully logged in with Google!");
+        
+        if (data.user.role === "admin") {
+          navigate("/adminDashboard");
+        } else if (data.user.role === "vendor") {
+          navigate("/vendorDashboard");
         } else {
-          dispatch(signInFailure({ message: "Not authorized as user" }));
-          toast.error("This email is registered as an Admin or Vendor.");
+          navigate("/");
         }
       } else {
         dispatch(signInFailure(data));
