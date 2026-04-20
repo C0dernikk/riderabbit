@@ -1,6 +1,6 @@
 <div align="center">
   
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=10b981&height=250&section=header&text=RideRabbit&fontSize=80&fontColor=ffffff&desc=Premium%20P2P%20Vehicle%20Rental%20Platform&descSize=20&descColor=ffffff" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=10b981&height=250&section=header&text=RideRabbit&fontSize=80&fontColor=ffffff&fontAlignY=35&desc=Premium%20P2P%20Vehicle%20Rental%20Platform&descSize=20&descColor=ffffff&descAlignY=60" width="100%" />
 
   <br>
   
