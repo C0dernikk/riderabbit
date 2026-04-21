@@ -5,11 +5,13 @@ import Card from '../ui/Card';
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const RevenueChart = ({ data = [] }) => {
-  // Format data: data comes as { _id: { month: 4 }, revenue: 15000 }
-  const chartData = data.map(item => ({
-    name: MONTHS[item._id.month - 1] || `Month ${item._id.month}`,
-    Revenue: item.revenue || item.count || 0
-  }));
+  const chartData = data.map(item => {
+    const monthIndex = item?._id?.month ? item._id.month - 1 : 0;
+    return {
+      name: MONTHS[monthIndex] || `Month`,
+      Revenue: item.revenue || item.count || 0
+    };
+  });
 
   if (chartData.length === 0) {
     return (

@@ -18,10 +18,13 @@ const LineCahrt = ({ data, dataKeyName = "Bookings" }) => {
   // Map backend monthly stats to Recharts format
   // Fallback to empty array if no data
   const formattedData = data && data.length > 0 
-    ? data.map((item) => ({
-        name: monthNames[(item._id?.month || 1) - 1],
-        [dataKeyName]: item.count || 0,
-      }))
+    ? data.map((item) => {
+        const monthIndex = item?._id?.month ? item._id.month - 1 : 0;
+        return {
+          name: monthNames[monthIndex] || "Unknown",
+          [dataKeyName]: item.count || 0,
+        };
+      })
     : [
         { name: "Jan", [dataKeyName]: 0 },
         { name: "Feb", [dataKeyName]: 0 },
