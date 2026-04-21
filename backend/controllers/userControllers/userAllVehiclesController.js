@@ -22,11 +22,8 @@ const parseBookingWindow = (pickUpDate, dropOffDate) => {
 
 export const listAllVehicles = async (req, res, next) => {
   try {
-    const vehicles = await Vehicle.find({
-      isDeleted: false,
-      isApproved: true,
-      isRejected: false,
-    }).sort({ createdAt: -1 });
+    const now = new Date();
+    const vehicles = await availableAtDate(now, now);
 
     return res.status(200).json({
       success: true,

@@ -54,19 +54,27 @@ const MessengerHub = () => {
   }, [isGlobalChatOpen, isChatView]);
 
   useEffect(() => {
-    if (!isGlobalChatOpen || !socket || !isChatView) return;
+    if (!socket || !currentUser) return;
 
     const handleReceiveMessage = (message) => {
-      if (message.bookingId === globalChatData.bookingId) {
+      // If we are currently viewing THIS specific chat
+      if (isGlobalChatOpen && isChatView && message.bookingId === globalChatData?.bookingId) {
         setMessages((prev) => [...prev, message]);
-      } else if (String(message.receiverId) === String(currentUser?._id)) {
+      } 
+      // If the message is intended for us, but we aren't viewing this specific chat
+      else if (String(message.receiverId) === String(currentUser._id)) {
         setUnreadCount((prev) => prev + 1);
+        
+        // If we are in the inbox view, refresh it to show the new message
+        if (isGlobalChatOpen && !isChatView) {
+          fetchInbox();
+        }
       }
     };
 
     socket.on("receiveMessage", handleReceiveMessage);
     return () => { socket.off("receiveMessage", handleReceiveMessage); };
-  }, [isGlobalChatOpen, socket, isChatView, globalChatData]);
+  }, [socket, currentUser, isGlobalChatOpen, isChatView, globalChatData]);
 
   useEffect(() => {
     if (!isGlobalChatOpen || !isChatView) return;

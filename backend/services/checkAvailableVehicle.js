@@ -6,7 +6,7 @@ const ACTIVE_BOOKING_STATUSES = [
   "PICKED_UP",
   "ON_TRIP",
   "OVERDUE",
-  "TRIP_ENDED",
+  "NOT_PICKED",
 ];
 
 export async function availableAtDate(pickUpDate, dropOffDate) {

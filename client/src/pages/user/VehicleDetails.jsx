@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
+import { vehicleService } from "../../services/vehicles";
+import { setSearchParams } from "../../features/bookings/bookingsSlice";
 import {
   IconArrowLeft,
   IconStarFilled,
@@ -22,7 +25,55 @@ const VehicleDetails = () => {
     (state) => state.vehicles,
   );
   const [activeImage, setActiveImage] = useState(0);
+  const [pickUpDate, setPickUpDate] = useState("");
+  const [dropOffDate, setDropOffDate] = useState("");
+  const [isChecking, setIsChecking] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleBooking = async () => {
+    if (!pickUpDate || !dropOffDate) {
+      toast.error("Please select both pick-up and drop-off dates");
+      return;
+    }
+
+    const now = new Date();
+    // Allow a small grace period of 1 hour in the past to avoid edge cases with timezones/immediate bookings
+    now.setHours(now.getHours() - 1); 
+
+    if (new Date(pickUpDate) < now) {
+      toast.error("Pick-up date cannot be in the past");
+      return;
+    }
+
+    if (new Date(pickUpDate) >= new Date(dropOffDate)) {
+      toast.error("Drop-off date must be after pick-up date");
+      return;
+    }
+
+    setIsChecking(true);
+    try {
+      const response = await vehicleService.checkAvailability({
+        vehicleId: singleVehicleDetail._id,
+        pickUpDate: new Date(pickUpDate).toISOString(),
+        dropOffDate: new Date(dropOffDate).toISOString(),
+      });
+
+      if (response.available) {
+        dispatch(setSearchParams({
+          pickupDate: { humanReadable: new Date(pickUpDate).toISOString() },
+          dropoffDate: { humanReadable: new Date(dropOffDate).toISOString() },
+        }));
+        navigate("/checkoutPage");
+      } else {
+        toast.error(response.message || "Vehicle is not available for these dates");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error checking availability");
+    } finally {
+      setIsChecking(false);
+    }
+  };
 
   if (!singleVehicleDetail) {
     return (
@@ -195,10 +246,31 @@ const VehicleDetails = () => {
             </Card>
 
             {/* Booking CTA */}
-            <div className="pt-4">
+            <div className="pt-4 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">Pick-up Date & Time</label>
+                  <input
+                    type="datetime-local"
+                    value={pickUpDate}
+                    onChange={(e) => setPickUpDate(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-600 outline-none text-sm font-bold bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">Drop-off Date & Time</label>
+                  <input
+                    type="datetime-local"
+                    value={dropOffDate}
+                    onChange={(e) => setDropOffDate(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-600 outline-none text-sm font-bold bg-white"
+                  />
+                </div>
+              </div>
               <Button
-                onClick={() => navigate("/checkoutPage")}
+                onClick={handleBooking}
                 variant="accent"
+                isLoading={isChecking}
                 className="w-full py-5 text-xl font-black shadow-xl"
               >
                 Book This Ride Now

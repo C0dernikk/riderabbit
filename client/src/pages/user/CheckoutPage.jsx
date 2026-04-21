@@ -180,10 +180,10 @@ const CheckoutPage = () => {
                     <IconMapPin className="text-accent-500 shrink-0 mt-1" />
                     <div>
                       <div className="font-bold text-slate-900 capitalize">
-                        {bookingData.pickup_district}
+                        {bookingData.pickup_district || singleVehicleDetail.district}
                       </div>
                       <div className="text-sm text-slate-500 capitalize">
-                        {bookingData.pickup_location}
+                        {bookingData.pickup_location || singleVehicleDetail.location}
                       </div>
                     </div>
                   </div>
@@ -209,10 +209,10 @@ const CheckoutPage = () => {
                     <IconMapPin className="text-accent-500 shrink-0 mt-1" />
                     <div>
                       <div className="font-bold text-slate-900 capitalize">
-                        {bookingData.pickup_district}
+                        {bookingData.pickup_district || singleVehicleDetail.district}
                       </div>
                       <div className="text-sm text-slate-500 capitalize">
-                        {bookingData.dropoff_location}
+                        {bookingData.dropoff_location || singleVehicleDetail.location}
                       </div>
                     </div>
                   </div>
