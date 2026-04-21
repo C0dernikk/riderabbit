@@ -24,7 +24,7 @@ export async function availableAtDate(pickUpDate, dropOffDate) {
       isDeleted: false,
       isApproved: true,
       isRejected: false,
-      isAvailable: true,
+      isAvailable: { $ne: false },
     }).sort({ createdAt: -1 });
   } catch (error) {
     console.error(error);
