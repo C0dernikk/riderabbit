@@ -35,6 +35,7 @@ Traditional car rental services are plagued by rigid locations, high overheads, 
 * **Smart Filtering & Variants**: Advanced Redux state management to filter vehicles by transmission, fuel type, seating capacity, and car type.
 * **Cloud Infrastructure**: Scalable image storage using **Cloudinary** for RC documents, vehicle profiles, and avatars.
 * **Transactional Emails**: Automated receipts and welcome emails delivered via the **Resend API**.
+* **Production Scalability & Security**: Implemented strict API Rate Limiting, infinite-scroll in-memory pagination for vehicle listings, and strictly enforced Redux state serializability.
 
 ### 🚧 Roadmap & Future Improvements (For Production Scaling)
 * **Automated KYC**: Integration with third-party Identity Verification APIs (e.g., Onfido) to automate driver license checks.
