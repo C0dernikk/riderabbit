@@ -78,7 +78,19 @@ const CarSearch = () => {
 
   const onSearch = async (data) => {
     try {
-      dispatch(setSearchParams(data));
+      const pickUpDateObj = data.pickuptime.toDate ? data.pickuptime.toDate() : new Date(data.pickuptime);
+      const dropOffDateObj = data.dropofftime.toDate ? data.dropofftime.toDate() : new Date(data.dropofftime);
+
+      const formattedSearchParams = {
+        ...data,
+        pickup_location: data.pickup.display_name,
+        pickup_district: data.pickup.display_name.split(',')[0],
+        pickupDate: { humanReadable: pickUpDateObj.toISOString() },
+        dropoffDate: { humanReadable: dropOffDateObj.toISOString() },
+        dropoff_location: data.dropoff ? data.dropoff.display_name : undefined
+      };
+
+      dispatch(setSearchParams(formattedSearchParams));
 
       const searchData = {
         lat: data.pickup.lat,
