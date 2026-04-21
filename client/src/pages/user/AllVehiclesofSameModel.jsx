@@ -71,7 +71,7 @@ const AllVehiclesofSameModel = () => {
                     <VehicleCard 
                       key={vehicle._id || idx} 
                       vehicle={vehicle} 
-                      onClick={(id) => onVehicleDetail(id, dispatch, navigate)}
+                      onClick={() => onVehicleDetail(vehicle._id, dispatch, navigate)}
                     />
                   )
                 ))}
