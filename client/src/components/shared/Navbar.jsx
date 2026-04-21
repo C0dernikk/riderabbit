@@ -151,7 +151,7 @@ function Navbar() {
               />
               <div className="flex flex-col">
                 <span className="font-black text-xs leading-none mb-0.5 truncate max-w-[100px]">
-                  {currentUser.username}
+                  {currentUser.name || currentUser.username}
                 </span>
                 <span className="text-[10px] font-bold text-primary-600 uppercase tracking-widest leading-none">
                   {isAdmin ? "Admin" : isVendor ? "Vendor" : "Member"}
@@ -256,7 +256,7 @@ function Navbar() {
                   />
                   <div className="flex flex-col">
                     <span className="font-black text-slate-900">
-                      {currentUser.username}
+                      {currentUser.name || currentUser.username}
                     </span>
                     <span className="text-xs font-bold text-primary-600 uppercase tracking-widest">
                       {isAdmin

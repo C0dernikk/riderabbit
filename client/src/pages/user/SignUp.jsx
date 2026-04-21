@@ -15,6 +15,7 @@ import Card from "../../components/ui/Card";
 
 const signupSchema = z
   .object({
+    name: z.string().min(2, "Full name is required"),
     username: z.string().min(3, "Username must be at least 3 characters"),
     email: z.string().email("Please enter a valid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
@@ -34,6 +35,7 @@ function SignUp() {
   } = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
       username: "",
       email: "",
       password: "",
@@ -106,6 +108,14 @@ function SignUp() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
+              <Input
+                label="Full Name"
+                placeholder="John Doe"
+                error={errors.name?.message}
+                {...register("name")}
+                className="bg-slate-50 border-slate-100"
+              />
+
               <Input
                 label="Username"
                 placeholder="johndoe"

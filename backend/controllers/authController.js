@@ -58,12 +58,13 @@ export const refreshAccessToken = async (req, res, next) => {
 };
 
 export const signUp = async (req, res, next) => {
+  const name = req.body.name?.trim();
   const username = req.body.username?.trim();
   const email = normalizeEmail(req.body.email);
   const password = req.body.password;
 
-  if (!username || !email || !password) {
-    return next(errorHandler(400, "username, email and password are required"));
+  if (!name || !username || !email || !password) {
+    return next(errorHandler(400, "name, username, email and password are required"));
   }
 
   if (!isValidEmail(email)) {
@@ -88,6 +89,7 @@ export const signUp = async (req, res, next) => {
     }
 
     const newUser = new User({
+      name,
       username,
       email,
       password,
@@ -164,6 +166,7 @@ export const google = async (req, res, next) => {
         Math.random().toString(36).slice(-8);
 
       user = new User({
+        name,
         email,
         password: generatedPassword,
         profilePicture: photo,

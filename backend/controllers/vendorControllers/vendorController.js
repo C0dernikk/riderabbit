@@ -13,12 +13,13 @@ const buildVendorUsername = (name = "vendor") =>
     .slice(-6)}`;
 
 export const vendorSignup = async (req, res, next) => {
+  const name = req.body.name?.trim();
   const username = req.body.username?.trim();
   const email = normalizeEmail(req.body.email);
   const password = req.body.password;
 
-  if (!username || !email || !password) {
-    return next(errorHandler(400, "username, email and password are required"));
+  if (!name || !username || !email || !password) {
+    return next(errorHandler(400, "name, username, email and password are required"));
   }
 
   if (!isValidEmail(email)) {
@@ -39,6 +40,7 @@ export const vendorSignup = async (req, res, next) => {
     }
 
     const user = new User({
+      name,
       username,
       email,
       password,
@@ -127,6 +129,7 @@ export const vendorGoogle = async (req, res, next) => {
         Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
 
       user = new User({
+        name,
         username: buildVendorUsername(name),
         email,
         password: generatedPassword,

@@ -10,6 +10,7 @@ import AuthDivider from "../../../components/ui/AuthDivider";
 import { btnDark, inputBase, labelError } from "../../../components/ui/tokens";
 
 const schema = z.object({
+  name: z.string().min(2, { message: "Full name is required" }),
   username: z.string().min(3, { message: "Use at least 3 characters" }),
   email: z
     .string()
@@ -56,6 +57,26 @@ function VendorSignup() {
       closeTo="/"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <div>
+          <label
+            htmlFor="name"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Full Name
+          </label>
+          <input
+            id="name"
+            type="text"
+            autoComplete="name"
+            className={inputBase}
+            placeholder="John Doe"
+            {...register("name")}
+          />
+          {errors.name ? (
+            <p className={labelError}>{errors.name.message}</p>
+          ) : null}
+        </div>
+
         <div>
           <label
             htmlFor="username"
