@@ -68,11 +68,20 @@ const AdminSidebar = () => {
 
   return (
     <div className="flex flex-col h-full p-6">
-      <div className="mb-10">
+      <div className="mb-4">
         <h2 className="text-2xl font-black tracking-tighter text-white">
           Admin<span className="text-primary-600">Panel</span>
         </h2>
       </div>
+
+      {/* Logout Button — always visible at top */}
+      <button
+        onClick={handleLogout}
+        className="mb-6 flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-400 hover:bg-red-400/10 transition-all duration-200 font-bold text-sm border border-red-400/20"
+      >
+        <IconLogout size={18} />
+        Logout
+      </button>
 
       <nav className="flex-1 space-y-2">
         {menuItems.map((item) => (
@@ -105,13 +114,6 @@ const AdminSidebar = () => {
         ))}
       </nav>
 
-      <button
-        onClick={handleLogout}
-        className="mt-auto flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-400/10 transition-all duration-200 font-bold text-sm"
-      >
-        <IconLogout size={20} />
-        Logout
-      </button>
     </div>
   );
 };

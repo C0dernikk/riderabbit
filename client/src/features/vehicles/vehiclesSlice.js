@@ -166,19 +166,23 @@ const vehiclesSlice = createSlice({
       vehiclesSlice.caseReducers.applyAllFilters(state);
     },
     applyAllFilters: (state) => {
-      let result = state.variantMode ? [...state.allVariants] : [...state.vehicles];
+      const source = state.variantMode
+        ? (Array.isArray(state.allVariants) ? [...state.allVariants] : [])
+        : (Array.isArray(state.vehicles) ? [...state.vehicles] : []);
+
+      let result = source;
 
       // 1. Search Query
       const query = state.filters.searchQuery?.toLowerCase();
       if (query) {
-        result = result.filter(v => 
-          v.brand?.toLowerCase().includes(query) || 
+        result = result.filter(v =>
+          v.brand?.toLowerCase().includes(query) ||
           v.model?.toLowerCase().includes(query) ||
           v.title?.toLowerCase().includes(query)
         );
       }
 
-      // 2. Checkboxes
+      // 2. Checkboxes (type and transmission)
       const data = state.filters.checkboxes || {};
       const activeCarTypes = [];
       if (data.suv) activeCarTypes.push("suv");
@@ -190,10 +194,16 @@ const vehiclesSlice = createSlice({
       if (data.manual) activeTransmissions.push("manual");
 
       if (activeCarTypes.length > 0) {
-        result = result.filter(v => activeCarTypes.includes(v.carType?.toLowerCase()));
+        result = result.filter(v => {
+          const vType = v.carType?.toLowerCase().trim();
+          return vType && activeCarTypes.includes(vType);
+        });
       }
       if (activeTransmissions.length > 0) {
-        result = result.filter(v => activeTransmissions.includes(v.transmission?.toLowerCase()));
+        result = result.filter(v => {
+          const vTrans = v.transmission?.toLowerCase().trim();
+          return vTrans && activeTransmissions.includes(vTrans);
+        });
       }
 
       state.filteredVehicles = result;

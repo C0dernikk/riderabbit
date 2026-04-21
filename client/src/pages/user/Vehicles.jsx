@@ -55,7 +55,7 @@ const Vehicles = () => {
   const [filterKey, setFilterKey] = useState(0);
 
   useEffect(() => {
-    dispatch(setVariants(null));
+    dispatch(setVariants([]));
     dispatch(fetchAllVehicles({ page: 1, limit: 12 }));
   }, [dispatch]);
 
