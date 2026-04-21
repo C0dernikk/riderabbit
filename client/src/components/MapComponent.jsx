@@ -49,11 +49,14 @@ const MapComponent = ({ vehicles, onVehicleClick }) => {
   // Generate markers. Use vehicle.coordinates if available, else fallback to mock offset
   const markers = vehicles.map(vehicle => {
     let position;
-    if (vehicle.coordinates && vehicle.coordinates.lat && vehicle.coordinates.lng) {
+    if (vehicle.locationPoint && vehicle.locationPoint.coordinates && vehicle.locationPoint.coordinates.length === 2) {
+      // GeoJSON stores coordinates as [longitude, latitude]. Leaflet needs [latitude, longitude]
+      const lat = vehicle.locationPoint.coordinates[1];
+      const lng = vehicle.locationPoint.coordinates[0];
       // Add a microscopic offset to prevent exact identical coordinates from stacking
       const tinyOffsetLat = (Math.random() - 0.5) * 0.0005;
       const tinyOffsetLng = (Math.random() - 0.5) * 0.0005;
-      position = [vehicle.coordinates.lat + tinyOffsetLat, vehicle.coordinates.lng + tinyOffsetLng];
+      position = [lat + tinyOffsetLat, lng + tinyOffsetLng];
     } else {
       const baseCoords = keralaDistricts[vehicle.district] || [10.8505, 76.2711]; // Default to center of Kerala
       const randomOffsetLat = (Math.random() - 0.5) * 0.05;

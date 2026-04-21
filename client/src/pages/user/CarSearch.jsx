@@ -144,11 +144,14 @@ const CarSearch = () => {
         const result = await dispatch(searchNearbyVehicles(searchData)).unwrap();
 
         if (result && result.length > 0) {
+          const pickUpDateObj = pickUpDate.toDate ? pickUpDate.toDate() : new Date(pickUpDate);
+          const dropOffDateObj = dropOffDate.toDate ? dropOffDate.toDate() : new Date(dropOffDate);
+
           dispatch(setSearchParams({
              pickup_district: "Nearby",
              pickup_location: "Your Location",
-             pickupDate: watch("pickuptime"),
-             dropoffDate: watch("dropofftime")
+             pickupDate: { humanReadable: pickUpDateObj.toISOString() },
+             dropoffDate: { humanReadable: dropOffDateObj.toISOString() }
           }));
           dispatch(setAvailableVehicles(result));
           toast.success(`Found ${result.length} vehicles near you!`);
