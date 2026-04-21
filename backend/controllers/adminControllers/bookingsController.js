@@ -1,4 +1,5 @@
 import Booking, { BOOKING_STATUSES } from "../../models/bookingModel.js";
+import Vehicle from "../../models/vehicleModel.js";
 import { errorHandler } from "../../utils/error.js";
 
 const allowedTransitions = {
@@ -122,9 +123,16 @@ export const changeStatus = async (req, res, next) => {
     }
 
     // Admin and Vendor override: Allow updating to any valid status without transition restrictions
-
     booking.status = status;
     await booking.save({ validateBeforeSave: false });
+
+    // Toggle vehicle availability based on new status
+    const TERMINAL_STATUSES = ["TRIP_COMPLETED", "CANCELED", "NOT_PICKED"];
+    if (status === "BOOKED") {
+      await Vehicle.findByIdAndUpdate(booking.vehicleId, { isAvailable: false });
+    } else if (TERMINAL_STATUSES.includes(status)) {
+      await Vehicle.findByIdAndUpdate(booking.vehicleId, { isAvailable: true });
+    }
 
     return res.status(200).json({
       success: true,

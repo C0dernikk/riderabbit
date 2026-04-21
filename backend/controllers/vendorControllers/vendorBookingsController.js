@@ -307,6 +307,9 @@ export const completeReturnInspection = async (req, res, next) => {
     booking.status = "TRIP_COMPLETED";
     await booking.save();
 
+    // Release vehicle back to available
+    await Vehicle.findByIdAndUpdate(booking.vehicleId?._id, { isAvailable: true });
+
     const vendor = await User.findById(req.user);
     const adminEmail = process.env.ADMIN_EMAIL || "dev.nikk37@gmail.com";
 
