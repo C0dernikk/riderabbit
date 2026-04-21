@@ -39,9 +39,11 @@ const CarNotFound = () => {
       </g>
     </svg>
 
-    <h1 className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">Uh-oh!</h1>
-
-    <p className="mt-4 text-gray-500">Oops no car found in this location</p>
+    <h1 className="mt-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-4xl">404 - Page Not Found</h1>
+    <p className="mt-4 text-slate-500 mb-8">Oops! The page you are looking for doesn't exist or has been moved.</p>
+    <a href="/" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-bold rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors shadow-lg shadow-primary-500/30">
+      Back to Home
+    </a>
   </div>
 </div>
   )

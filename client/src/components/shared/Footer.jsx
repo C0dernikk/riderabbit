@@ -98,17 +98,21 @@ function Footer() {
           <div className="lg:col-span-2 space-y-8">
             <h4 className="text-white font-black text-sm uppercase tracking-widest">Explore</h4>
             <ul className="space-y-4">
-              {["Vehicles", "Enterprise", "Contact", "About Us"].map((item) => (
-                <li key={item}>
-                  <Link
-                    to={`/${item.toLowerCase().replace(" ", "-")}`}
-                    className="group flex items-center gap-2 hover:text-white transition-colors"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary-600 opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
-                    <span className="font-bold">{item}</span>
-                  </Link>
-                </li>
-              ))}
+              {["Vehicles", "Enterprise", "Contact", "About Us"].map((item) => {
+                const isAboutUs = item === "About Us";
+                return (
+                  <li key={item}>
+                    <Link
+                      to={isAboutUs ? "/" : `/${item.toLowerCase().replace(" ", "-")}`}
+                      onClick={isAboutUs ? () => window.scrollTo({ top: 0, behavior: 'smooth' }) : undefined}
+                      className="group flex items-center gap-2 hover:text-white transition-colors"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary-600 opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
+                      <span className="font-bold">{item}</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
