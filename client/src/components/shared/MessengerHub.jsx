@@ -27,7 +27,7 @@ const MessengerHub = () => {
     const fetchUnreadCount = async () => {
       try {
         const res = await api.get("/messages/unread-count");
-        setUnreadCount(res.data?.count || 0);
+        setUnreadCount(res.count || 0);
       } catch (err) {
         console.error(err);
       }
@@ -39,7 +39,7 @@ const MessengerHub = () => {
     try {
       setLoadingInbox(true);
       const res = await api.get("/messages/inbox/all");
-      setInbox(res.data?.inbox || []);
+      setInbox(res.inbox || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -82,12 +82,12 @@ const MessengerHub = () => {
     const fetchMessages = async () => {
       try {
         const response = await api.get(`/messages/${globalChatData.bookingId}`);
-        setMessages(response.data?.messages || []);
+        setMessages(response.messages || []);
         
         await api.put(`/messages/mark-read/${globalChatData.bookingId}`);
         
         const countRes = await api.get("/messages/unread-count");
-        setUnreadCount(countRes.data?.count || 0);
+        setUnreadCount(countRes.count || 0);
 
       } catch (error) {
         console.error("Error fetching messages:", error);
