@@ -58,7 +58,7 @@ const MessengerHub = () => {
 
     const handleReceiveMessage = (message) => {
       // If we are currently viewing THIS specific chat
-      if (isGlobalChatOpen && isChatView && message.bookingId === globalChatData?.bookingId) {
+      if (isGlobalChatOpen && isChatView && String(message.bookingId) === String(globalChatData?.bookingId)) {
         setMessages((prev) => [...prev, message]);
       } 
       // If the message is intended for us, but we aren't viewing this specific chat
@@ -282,7 +282,8 @@ const MessengerHub = () => {
 
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((msg, index) => {
-                  const isMe = msg.senderId?._id ? msg.senderId._id === currentUser._id : msg.senderId === currentUser._id;
+                  const msgSenderId = msg.senderId?._id ? String(msg.senderId._id) : String(msg.senderId);
+                  const isMe = msgSenderId === String(currentUser._id);
                   return (
                     <div
                       key={index}

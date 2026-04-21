@@ -48,38 +48,9 @@ export const SocketProvider = ({ children }) => {
   }, [currentUser]);
 
   useEffect(() => {
-    if (!socket) return;
-
-    const handleReceiveMessage = (message) => {
-      const isChatOpenForBooking = isGlobalChatOpen && globalChatData?.bookingId === message.bookingId;
-      const amIReceiver = String(message.receiverId) === String(currentUser?._id);
-
-      if (!isChatOpenForBooking && amIReceiver) {
-        toast("💬 New Message", {
-          description: `Booking #${message.bookingId.slice(-6).toUpperCase()}: ${message.text}`,
-          duration: 6000,
-          action: {
-            label: "Open Chat",
-            onClick: () => {
-              dispatch(
-                openGlobalChat({
-                  bookingId: message.bookingId,
-                  otherPartyId: message.senderId,
-                  otherPartyName: "Chat",
-                })
-              );
-            },
-          },
-        });
-      }
-    };
-
-    socket.on("receiveMessage", handleReceiveMessage);
-
-    return () => {
-      socket.off("receiveMessage", handleReceiveMessage);
-    };
-  }, [socket, isGlobalChatOpen, globalChatData, currentUser, dispatch]);
+    // Toast notification removed as per user request. 
+    // MessengerHub.jsx handles all background receiving and badge updates.
+  }, [socket, currentUser, dispatch]);
 
   return (
     <SocketContext.Provider value={{ socket }}>
