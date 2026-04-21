@@ -31,12 +31,15 @@ const AvailableVehiclesAfterSearch = () => {
       
       const result = await dispatch(filterVehicles(filters)).unwrap();
       
-      if (result) {
-        dispatch(setVariants(result));
+      // result is the full API response: { vehicles: [...], count, ... }
+      const variants = result?.vehicles || (Array.isArray(result) ? result : []);
+
+      if (variants.length > 0) {
+        dispatch(setVariants(variants));
         dispatch(setFilters({ model }));
         navigate("/allVariants");
       } else {
-        toast.error("No variants found");
+        toast.error("No variants found for this model");
       }
     } catch (error) {
       toast.error(error || "Failed to fetch vehicle variants");
