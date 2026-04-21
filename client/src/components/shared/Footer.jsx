@@ -47,7 +47,11 @@ function Footer() {
           {/* Brand & Newsletter Column */}
           <div className="lg:col-span-5 space-y-10">
             <div className="space-y-6 relative z-10">
-              <Link to="/" className="flex items-center gap-2.5 group w-fit">
+              <Link 
+                to="/" 
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="flex items-center gap-2.5 group w-fit"
+              >
                 <div className="relative w-12 h-12 flex items-center justify-center group-hover:rotate-6 transition-all duration-500">
                   <div className="absolute inset-0 bg-emerald-500 rounded-2xl rotate-6 group-hover:rotate-12 transition-all duration-500 opacity-40 blur-sm" />
                   <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-emerald-500 rounded-2xl shadow-xl shadow-emerald-500/20 flex items-center justify-center overflow-hidden border border-white/10">

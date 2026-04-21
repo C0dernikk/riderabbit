@@ -133,10 +133,11 @@ export const searchCar = async (req, res, next) => {
       const vehicleLocation = vehicle.location?.toLowerCase() || "";
 
       // Relaxed location matching because search inputs can be full addresses
-      const districtMatch = normalizedDistrict.includes(vehicleDistrict) || vehicleDistrict.includes(normalizedDistrict);
-      const pickupMatch = normalizedPickupLocation.includes(vehicleLocation) || vehicleLocation.includes(normalizedPickupLocation);
+      const isGeoSearch = normalizedDistrict === "nearby" || normalizedPickupLocation === "your location";
+      const districtMatch = isGeoSearch || normalizedDistrict.includes(vehicleDistrict) || vehicleDistrict.includes(normalizedDistrict);
+      const pickupMatch = isGeoSearch || normalizedPickupLocation.includes(vehicleLocation) || vehicleLocation.includes(normalizedPickupLocation);
       
-      const dropMatch = normalizedDropLocation
+      const dropMatch = normalizedDropLocation && !isGeoSearch
         ? (normalizedDropLocation.includes(vehicleLocation) || vehicleLocation.includes(normalizedDropLocation))
         : true;
 
