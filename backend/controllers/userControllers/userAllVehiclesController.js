@@ -22,13 +22,20 @@ const parseBookingWindow = (pickUpDate, dropOffDate) => {
 
 export const listAllVehicles = async (req, res, next) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
     const now = new Date();
     const vehicles = await availableAtDate(now, now);
+
+    const startIndex = (page - 1) * limit;
+    const paginatedVehicles = vehicles.slice(startIndex, startIndex + limit);
 
     return res.status(200).json({
       success: true,
       count: vehicles.length,
-      vehicles,
+      currentPage: page,
+      totalPages: Math.ceil(vehicles.length / limit),
+      vehicles: paginatedVehicles,
     });
   } catch (error) {
     return next(
@@ -107,7 +114,12 @@ export const searchCar = async (req, res, next) => {
       pickUpDate,
       dropOffDate,
       model,
+      page: reqPage,
+      limit: reqLimit,
     } = req.body || {};
+
+    const page = parseInt(reqPage) || parseInt(req.query.page) || 1;
+    const limit = parseInt(reqLimit) || parseInt(req.query.limit) || 12;
 
     if (!pickup_district || !pickup_location || !pickUpDate || !dropOffDate) {
       return next(errorHandler(400, "Missing required search fields"));
@@ -167,10 +179,15 @@ export const searchCar = async (req, res, next) => {
       }, {}),
     );
 
+    const startIndex = (page - 1) * limit;
+    const paginatedVehicles = resultVehicles.slice(startIndex, startIndex + limit);
+
     return res.status(200).json({
       success: true,
       count: resultVehicles.length,
-      vehicles: resultVehicles,
+      currentPage: page,
+      totalPages: Math.ceil(resultVehicles.length / limit),
+      vehicles: paginatedVehicles,
     });
   } catch (error) {
     return next(errorHandler(500, "Error while searching cars"));
@@ -179,7 +196,10 @@ export const searchCar = async (req, res, next) => {
 
 export const searchCarsNearMe = async (req, res, next) => {
   try {
-    const { lat, lng, radiusInKm = 50, pickUpDate, dropOffDate } = req.body || {};
+    const { lat, lng, radiusInKm = 50, pickUpDate, dropOffDate, page: reqPage, limit: reqLimit } = req.body || {};
+
+    const page = parseInt(reqPage) || parseInt(req.query.page) || 1;
+    const limit = parseInt(reqLimit) || parseInt(req.query.limit) || 12;
 
     if (!lat || !lng || !pickUpDate || !dropOffDate) {
       return next(errorHandler(400, "Missing required geospatial search fields"));
@@ -228,10 +248,15 @@ export const searchCarsNearMe = async (req, res, next) => {
       }, {}),
     );
 
+    const startIndex = (page - 1) * limit;
+    const paginatedVehicles = uniqueVehicles.slice(startIndex, startIndex + limit);
+
     return res.status(200).json({
       success: true,
       count: uniqueVehicles.length,
-      vehicles: uniqueVehicles,
+      currentPage: page,
+      totalPages: Math.ceil(uniqueVehicles.length / limit),
+      vehicles: paginatedVehicles,
     });
   } catch (error) {
     return next(errorHandler(500, "Error while searching nearby cars"));

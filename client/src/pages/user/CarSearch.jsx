@@ -102,13 +102,15 @@ const CarSearch = () => {
         dropOffDate: data.dropofftime.toDate
           ? data.dropofftime.toDate()
           : data.dropofftime,
+        page: 1,
+        limit: 12,
       };
 
       const result = await dispatch(searchNearbyVehicles(searchData)).unwrap();
 
-      if (result) {
+      if (result && result.vehicles && result.vehicles.length > 0) {
         dispatch(setAvailableVehicles(result));
-        toast.success(`Found ${result.length} available vehicles!`);
+        toast.success(`Found ${result.count} available vehicles!`);
         navigate("/availableVehicles");
       } else {
         toast.error("No vehicles found for selected criteria");
@@ -139,11 +141,13 @@ const CarSearch = () => {
           radiusInKm: 50,
           pickUpDate,
           dropOffDate,
+          page: 1,
+          limit: 12,
         };
 
         const result = await dispatch(searchNearbyVehicles(searchData)).unwrap();
 
-        if (result && result.length > 0) {
+        if (result && result.vehicles && result.vehicles.length > 0) {
           const pickUpDateObj = pickUpDate.toDate ? pickUpDate.toDate() : new Date(pickUpDate);
           const dropOffDateObj = dropOffDate.toDate ? dropOffDate.toDate() : new Date(dropOffDate);
 
@@ -154,7 +158,7 @@ const CarSearch = () => {
              dropoffDate: { humanReadable: dropOffDateObj.toISOString() }
           }));
           dispatch(setAvailableVehicles(result));
-          toast.success(`Found ${result.length} vehicles near you!`);
+          toast.success(`Found ${result.count} vehicles near you!`);
           navigate("/availableVehicles");
         } else {
           toast.error("No vehicles found within 50km of your location.");

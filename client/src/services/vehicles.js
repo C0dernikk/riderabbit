@@ -6,8 +6,8 @@ import api from "./api";
  */
 export const vehicleService = {
   // Public/User Endpoints
-  getAllVehicles: async () => {
-    return api.get("/user/vehicles");
+  getAllVehicles: async (params) => {
+    return api.get("/user/vehicles", { params });
   },
   getVehicleById: async (id) => {
     return api.get(`/user/vehicles/${id}`);

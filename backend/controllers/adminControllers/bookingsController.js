@@ -121,16 +121,7 @@ export const changeStatus = async (req, res, next) => {
       return next(errorHandler(404, "Booking not found"));
     }
 
-    const nextStates = allowedTransitions[booking.status] || [];
-
-    if (!nextStates.includes(status)) {
-      return next(
-        errorHandler(
-          400,
-          `Invalid transition from ${booking.status} to ${status}`
-        )
-      );
-    }
+    // Admin and Vendor override: Allow updating to any valid status without transition restrictions
 
     booking.status = status;
     await booking.save({ validateBeforeSave: false });

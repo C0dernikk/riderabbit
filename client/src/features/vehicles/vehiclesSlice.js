@@ -3,10 +3,10 @@ import { vehicleService } from "../../services/vehicles";
 
 export const fetchAllVehicles = createAsyncThunk(
   "vehicles/fetchAll",
-  async (_, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const response = await vehicleService.getAllVehicles();
-      return response.vehicles || response.data || response;
+      const response = await vehicleService.getAllVehicles(params);
+      return response.data || response;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -18,7 +18,7 @@ export const filterVehicles = createAsyncThunk(
   async (filters, { rejectWithValue }) => {
     try {
       const response = await vehicleService.searchVehicles(filters);
-      return response.vehicles || response.data || response;
+      return response.data || response;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -30,7 +30,7 @@ export const searchNearbyVehicles = createAsyncThunk(
   async (geoData, { rejectWithValue }) => {
     try {
       const response = await vehicleService.searchNearbyVehicles(geoData);
-      return response.vehicles || response.data || response;
+      return response.data || response;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -98,6 +98,11 @@ const initialState = {
     locations: [],
     districts: []
   },
+  pagination: {
+    currentPage: 1,
+    totalPages: 1,
+    totalCount: 0
+  },
   isLoading: false,
   error: null,
 };
@@ -123,7 +128,20 @@ const vehiclesSlice = createSlice({
       state.metadata = action.payload;
     },
     setAvailableVehicles: (state, action) => {
-      state.availableVehicles = action.payload;
+      // action.payload is { vehicles, currentPage, totalPages, count }
+      if (action.payload.currentPage === 1) {
+        state.availableVehicles = action.payload.vehicles || action.payload;
+      } else if (action.payload.vehicles) {
+        state.availableVehicles = [...state.availableVehicles, ...action.payload.vehicles];
+      }
+      
+      if (action.payload.totalPages !== undefined) {
+        state.pagination = {
+          currentPage: action.payload.currentPage,
+          totalPages: action.payload.totalPages,
+          totalCount: action.payload.count
+        };
+      }
     },
     setVariants: (state, action) => {
       state.allVariants = action.payload;
@@ -213,8 +231,22 @@ const vehiclesSlice = createSlice({
       })
       .addCase(fetchAllVehicles.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.vehicles = action.payload;
-        state.filteredVehicles = action.payload;
+        
+        if (action.payload.currentPage === 1) {
+          state.vehicles = action.payload.vehicles || action.payload;
+        } else if (action.payload.vehicles) {
+          state.vehicles = [...state.vehicles, ...action.payload.vehicles];
+        }
+
+        if (action.payload.totalPages !== undefined) {
+          state.pagination = {
+            currentPage: action.payload.currentPage,
+            totalPages: action.payload.totalPages,
+            totalCount: action.payload.count
+          };
+        }
+
+        state.filteredVehicles = state.vehicles;
       })
       .addCase(fetchAllVehicles.rejected, (state, action) => {
         state.isLoading = false;
@@ -240,7 +272,20 @@ const vehiclesSlice = createSlice({
       })
       .addCase(filterVehicles.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.searchResults = action.payload;
+        
+        if (action.payload.currentPage === 1) {
+          state.searchResults = action.payload.vehicles || action.payload;
+        } else if (action.payload.vehicles) {
+          state.searchResults = [...state.searchResults, ...action.payload.vehicles];
+        }
+
+        if (action.payload.totalPages !== undefined) {
+          state.pagination = {
+            currentPage: action.payload.currentPage,
+            totalPages: action.payload.totalPages,
+            totalCount: action.payload.count
+          };
+        }
       })
       .addCase(filterVehicles.rejected, (state, action) => {
         state.isLoading = false;

@@ -47,7 +47,7 @@ export const onVehicleDetail = async (id, dispatch, navigate) => {
 const Vehicles = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { filteredVehicles: displayData, isLoading, filters } = useSelector(
+  const { filteredVehicles: displayData, isLoading, filters, pagination } = useSelector(
     (state) => state.vehicles,
   );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -56,8 +56,14 @@ const Vehicles = () => {
 
   useEffect(() => {
     dispatch(setVariants(null));
-    dispatch(fetchAllVehicles());
+    dispatch(fetchAllVehicles({ page: 1, limit: 12 }));
   }, [dispatch]);
+
+  const handleLoadMore = () => {
+    if (pagination.currentPage < pagination.totalPages) {
+      dispatch(fetchAllVehicles({ page: pagination.currentPage + 1, limit: 12 }));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 pt-24 pb-20 relative overflow-hidden">
@@ -267,13 +273,15 @@ const Vehicles = () => {
             )}
 
             {/* Pagination / Load More */}
-            {displayData?.length > 0 && (
+            {displayData?.length > 0 && pagination.currentPage < pagination.totalPages && (
               <div className="flex justify-center mt-8">
                 <Button
+                  onClick={handleLoadMore}
+                  disabled={isLoading}
                   variant="secondary"
                   className="px-10 h-14 rounded-2xl font-black uppercase tracking-widest text-sm bg-white border-slate-200 hover:border-primary-600/30"
                 >
-                  Load More Vehicles
+                  {isLoading ? "Loading..." : "Load More Vehicles"}
                 </Button>
               </div>
             )}

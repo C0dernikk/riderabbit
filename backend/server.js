@@ -2,6 +2,7 @@ import "./config/env.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import rateLimit from "express-rate-limit";
 import http from "http";
 import mongoose from "mongoose";
 import { buildMongoUri } from "./config/database.js";
@@ -59,16 +60,29 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { success: false, message: "Too many requests from this IP, please try again after 15 minutes" }
+});
 
-app.get("/api/health", (req, res) => {
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 requests per windowMs
+  message: { success: false, message: "Too many login attempts from this IP, please try again after 15 minutes" }
+});
+
+app.use("/api", apiLimiter);
+
+app.use("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
     message: "RideRabit backend is healthy",
   });
 });
 
+app.use("/api/auth", authLimiter, authRoute);
 app.use("/api/user", userRoute);
-app.use("/api/auth", authRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/vendor", vendorRoute);
 app.use("/api/contact", contactRoute);
