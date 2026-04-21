@@ -229,41 +229,49 @@ const MessengerHub = () => {
                   <p>No active conversations</p>
                 </div>
               ) : (
-                inbox.map((chat) => (
-                  <div 
-                    key={chat._id}
-                    onClick={() => dispatch(openGlobalChat({
-                      bookingId: chat._id,
-                      otherPartyId: chat.otherParty?._id,
-                      otherPartyName: chat.otherParty?.username || chat.otherParty?.name || "User",
-                    }))}
-                    className="flex items-center gap-4 p-4 bg-white hover:bg-slate-50 cursor-pointer border-b border-slate-100 transition-colors"
-                  >
-                    <div className="w-12 h-12 bg-slate-200 rounded-full overflow-hidden shrink-0">
-                      {chat.otherParty?.profilePicture ? (
-                         <img src={chat.otherParty.profilePicture} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                         <div className="w-full h-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-xl uppercase">
-                           {(chat.otherParty?.username || chat.otherParty?.name || "U")[0]}
-                         </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-baseline mb-1">
-                        <h4 className="font-bold text-slate-900 truncate">{chat.otherParty?.username || chat.otherParty?.name || "User"}</h4>
-                        <span className="text-[10px] text-slate-400 shrink-0">
-                          {new Date(chat.lastMessage?.createdAt).toLocaleDateString()}
-                        </span>
+                inbox.map((chat) => {
+                  const displayName = currentUser.role === 'vendor'
+                    ? `Booking #${chat._id.slice(-6).toUpperCase()}`
+                    : (chat.otherParty?.username || chat.otherParty?.name || "User");
+                  
+                  return (
+                    <div 
+                      key={chat._id}
+                      onClick={() => dispatch(openGlobalChat({
+                        bookingId: chat._id,
+                        otherPartyId: chat.otherParty?._id,
+                        otherPartyName: displayName,
+                      }))}
+                      className="flex items-center gap-4 p-4 bg-white hover:bg-slate-50 cursor-pointer border-b border-slate-100 transition-colors"
+                    >
+                      <div className="w-12 h-12 bg-slate-200 rounded-full overflow-hidden shrink-0">
+                        {chat.otherParty?.profilePicture ? (
+                           <img src={chat.otherParty.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                           <div className="w-full h-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-xl uppercase">
+                             {displayName[0]}
+                           </div>
+                        )}
                       </div>
-                      <div className="flex justify-between items-center gap-2">
-                         <p className="text-sm text-slate-500 truncate flex-1">{chat.lastMessage?.text}</p>
-                         <span className="text-[10px] font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full shrink-0">
-                           #{chat._id.slice(-4).toUpperCase()}
-                         </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-baseline mb-1">
+                          <h4 className="font-bold text-slate-900 truncate">{displayName}</h4>
+                          <span className="text-[10px] text-slate-400 shrink-0">
+                            {new Date(chat.lastMessage?.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center gap-2">
+                           <p className="text-sm text-slate-500 truncate flex-1">{chat.lastMessage?.text}</p>
+                           {currentUser.role !== 'vendor' && (
+                             <span className="text-[10px] font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full shrink-0">
+                               #{chat._id.slice(-4).toUpperCase()}
+                             </span>
+                           )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           ) : (
