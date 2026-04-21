@@ -106,6 +106,7 @@ export const searchCar = async (req, res, next) => {
       dropoff_location,
       pickUpDate,
       dropOffDate,
+      model,
     } = req.body || {};
 
     if (!pickup_district || !pickup_location || !pickUpDate || !dropOffDate) {
@@ -128,18 +129,25 @@ export const searchCar = async (req, res, next) => {
     const normalizedDropLocation = dropoff_location?.trim().toLowerCase();
 
     const filteredVehicles = availableVehicles.filter((vehicle) => {
-      const districtMatch =
-        vehicle.district?.toLowerCase() === normalizedDistrict;
-      const pickupMatch =
-        vehicle.location?.toLowerCase() === normalizedPickupLocation;
+      const vehicleDistrict = vehicle.district?.toLowerCase() || "";
+      const vehicleLocation = vehicle.location?.toLowerCase() || "";
+
+      // Relaxed location matching because search inputs can be full addresses
+      const districtMatch = normalizedDistrict.includes(vehicleDistrict) || vehicleDistrict.includes(normalizedDistrict);
+      const pickupMatch = normalizedPickupLocation.includes(vehicleLocation) || vehicleLocation.includes(normalizedPickupLocation);
+      
       const dropMatch = normalizedDropLocation
-        ? vehicle.location?.toLowerCase() === normalizedDropLocation
+        ? (normalizedDropLocation.includes(vehicleLocation) || vehicleLocation.includes(normalizedDropLocation))
         : true;
 
-      return districtMatch && pickupMatch && dropMatch;
+      // Match model strictly if provided
+      const modelMatch = model ? vehicle.model?.toLowerCase() === model.toLowerCase() : true;
+
+      return (districtMatch || pickupMatch) && dropMatch && modelMatch;
     });
 
-    const uniqueVehicles = Object.values(
+    // If searching for variants of a specific model, do not group them. Return all variants!
+    const resultVehicles = model ? filteredVehicles : Object.values(
       filteredVehicles.reduce((accumulator, vehicle) => {
         const key = [
           vehicle.brand,
@@ -160,8 +168,8 @@ export const searchCar = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      count: uniqueVehicles.length,
-      vehicles: uniqueVehicles,
+      count: resultVehicles.length,
+      vehicles: resultVehicles,
     });
   } catch (error) {
     return next(errorHandler(500, "Error while searching cars"));
