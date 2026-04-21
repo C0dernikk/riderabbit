@@ -24,9 +24,27 @@ const VehicleDetails = () => {
   const { singleVehicleDetail } = useSelector(
     (state) => state.vehicles,
   );
+  const searchParams = useSelector((state) => state.bookings.searchParams);
+
+  // Helper to format date for datetime-local input safely
+  const formatForInput = (dateValue) => {
+    if (!dateValue) return "";
+    try {
+      if (dateValue.$d) return new Date(dateValue.$d).toISOString().slice(0, 16); // dayjs object
+      if (dateValue.toDate) return new Date(dateValue.toDate()).toISOString().slice(0, 16);
+      if (dateValue.humanReadable) return new Date(dateValue.humanReadable).toISOString().slice(0, 16);
+      if (typeof dateValue === "string" || dateValue instanceof Date) {
+        return new Date(dateValue).toISOString().slice(0, 16);
+      }
+      return "";
+    } catch {
+      return "";
+    }
+  };
+
+  const [pickUpDate, setPickUpDate] = useState(() => formatForInput(searchParams?.pickuptime || searchParams?.pickupDate));
+  const [dropOffDate, setDropOffDate] = useState(() => formatForInput(searchParams?.dropofftime || searchParams?.dropoffDate));
   const [activeImage, setActiveImage] = useState(0);
-  const [pickUpDate, setPickUpDate] = useState("");
-  const [dropOffDate, setDropOffDate] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
