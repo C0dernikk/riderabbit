@@ -50,10 +50,17 @@ const UserSidebar = () => {
 
   return (
     <div className="flex flex-col h-full p-6">
-      <div className="mb-10">
+      <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-black tracking-tighter text-white">
           My<span className="text-primary-600">Account</span>
         </h2>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-3 py-2 rounded-xl text-red-400 hover:bg-red-400/10 transition-all duration-200 font-bold text-sm"
+        >
+          <IconLogout size={18} />
+          Logout
+        </button>
       </div>
 
       <nav className="flex-1 space-y-2">
@@ -100,13 +107,7 @@ const UserSidebar = () => {
         ))}
       </nav>
 
-      <button
-        onClick={handleLogout}
-        className="mt-auto flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-400/10 transition-all duration-200 font-bold text-sm"
-      >
-        <IconLogout size={20} />
-        Logout
-      </button>
+
     </div>
   );
 };
